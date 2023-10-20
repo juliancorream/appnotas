@@ -5,9 +5,24 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Platform } from "react-native";
+
+import appFirebase from "../credenciales";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  deleteDoc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
+
+const db = getFirestore(appFirebase);
 
 export default function CreateNote(props) {
   const initialState = {
@@ -47,6 +62,37 @@ export default function CreateNote(props) {
     setMode(currentDate);
   };
 
+  const handleChangeText = (value, name) => {
+    setEstado({ ...estado, [name]: value });
+  };
+
+  const saveNote = async () => {
+    try {
+      if (estado.titulo === "" || estado.detalle === "") {
+        Alert.alert(
+          "Mensaje Importante",
+          "Debes rellenar los campos Requeridos"
+        );
+      } else {
+        const nota = {
+          titulo: estado.titulo,
+          detalle: estado.detalle,
+          fecha: fecha,
+          hora: hora,
+        };
+        await addDoc(collection(db, "notas"), {
+          ...nota,
+        });
+        Alert.alert("Exito", "Guardado con Exito");
+        props.navigation.navigate("Notas");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    //console.log(nota);
+  };
+
   return (
     <View style={styles.contenedorPadre}>
       <View style={styles.tarjeta}>
@@ -54,12 +100,16 @@ export default function CreateNote(props) {
           <TextInput
             placeholder="Ingresa el Titulo"
             style={styles.textoInput}
+            value={estado.titulo}
+            onChangeText={(value) => handleChangeText(value, "titulo")}
           />
           <TextInput
             placeholder="Ingresa el Detalle"
             multiline={true}
             numberOfLines={4}
             style={styles.textoInput}
+            value={estado.detalle}
+            onChangeText={(value) => handleChangeText(value, "detalle")}
           />
 
           {/*Contenedor de Fecha*/}
@@ -106,7 +156,7 @@ export default function CreateNote(props) {
 
           {/*Boton para Enviar los Datos*/}
           <View>
-            <TouchableOpacity style={styles.botonEnviar}>
+            <TouchableOpacity style={styles.botonEnviar} onPress={saveNote}>
               <Text style={styles.textoBtnEnviar}>Guardar una Nueva Nota</Text>
             </TouchableOpacity>
           </View>

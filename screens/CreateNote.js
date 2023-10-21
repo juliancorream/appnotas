@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Text,
   StyleSheet,
@@ -9,18 +9,8 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Platform } from "react-native";
-
 import appFirebase from "../credenciales";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  doc,
-  deleteDoc,
-  getDoc,
-  setDoc,
-} from "firebase/firestore";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 
 const db = getFirestore(appFirebase);
 
@@ -225,8 +215,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   botonEnviar: {
-    backgroundColor: "#3E4095",
-    borderColor: "#6589BA",
+    backgroundColor: "#00900B",
+    borderColor: "#00900B",
     borderWidth: 3,
     borderRadius: 20,
     marginLeft: 20,
@@ -238,5 +228,6 @@ const styles = StyleSheet.create({
     padding: 10,
     color: "white",
     fontSize: 16,
+    fontWeight: "bold",
   },
 });
